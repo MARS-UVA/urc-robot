@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:macro name="robot_ros2_control" params="use_sim">
+
+<ros2_control name="TrainingBotSystem" type="system">
+
+<hardware>
+    <xacro:if value="$(arg use_sim)">
+        <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
+        <param name="headless">false</param>
+        <!-- <param name="mujoco_model">${mujoco_model_path}</param> -->
+        <param name="sim_speed_factor">1.0</param>
+      </xacro:if>
+      <xacro:unless value="$(arg use_sim)">
+        <plugin>mock_components/GenericSystem</plugin>
+      </xacro:unless>
+</hardware>
+
+
+<joint name="front_left_wheel_joint">
+    <command_interface name="velocity"/>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+</joint>
+
+<joint name="front_right_wheel_joint">
+    <command_interface name="velocity"/>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+</joint>
+
+<joint name="back_left_wheel_joint">
+    <command_interface name="velocity"/>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+</joint>
+
+<joint name="back_right_wheel_joint">
+    <command_interface name="velocity"/>
+    <state_interface name="position"/>
+    <state_interface name="velocity"/>
+</joint>
+
+</ros2_control>
+
+</xacro:macro>
+
+</robot>

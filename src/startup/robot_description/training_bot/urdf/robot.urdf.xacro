@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="training_bot">
+
+    <xacro:arg name="use_sim" default="false"/>
+    
+    <!-- Base -->
+    <link name="base_link">
+
+        <inertial>
+            <mass value="5.0"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+                ixx="0.02"
+                ixy="0"
+                ixz="0"
+                iyy="0.04"
+                iyz="0"
+                izz="0.05"/>
+        </inertial>
+
+        <visual>
+            <geometry>
+                <box size="0.3048 0.2032 0.003175"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0.4 0.8 1"/>
+            </material>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.3048 0.2032 0.003175"/>
+            </geometry>
+        </collision>
+
+    </link>
+
+
+    <!-- Wheel macro -->
+    <xacro:macro name="wheel" params="name">
+
+        <link name="${name}">
+
+            <inertial>
+                <mass value="0.2166"/>
+                <origin xyz="0 0 0"/>
+                <inertia
+                    ixx="0.00028"
+                    ixy="0"
+                    ixz="0"
+                    iyy="0.00015"
+                    iyz="0"
+                    izz="0.00015"/>
+            </inertial>
+
+            <visual>
+                <origin rpy="1.5708 0 0"/>
+                <geometry>
+                    <cylinder radius="0.0508" length="0.025"/>
+                </geometry>
+                <material name="black">
+                    <color rgba="0.05 0.05 0.05 1"/>
+                </material>
+            </visual>
+
+            <collision>
+                <origin rpy="1.5708 0 0"/>
+                <geometry>
+                    <cylinder radius="0.0508" length="0.025"/>
+                </geometry>
+            </collision>
+
+        </link>
+
+    </xacro:macro>
+
+
+    <xacro:wheel name="front_left_wheel"/>
+    <xacro:wheel name="front_right_wheel"/>
+    <xacro:wheel name="back_left_wheel"/>
+    <xacro:wheel name="back_right_wheel"/>
+
+    <!-- ros2_control -->
+    <xacro:include filename="ros2_control.xacro"/>
+    <xacro:robot_ros2_control use_sim="$(arg use_sim)"/>
+
+    <!-- Wheel joints -->
+
+    <joint name="front_left_wheel_joint" type="continuous">
+        <origin xyz="0.1016 0.1016 -0.0508"/>
+        <axis xyz="0 1 0"/>
+        <parent link="base_link"/>
+        <child link="front_left_wheel"/>
+    </joint>
+
+
+    <joint name="front_right_wheel_joint" type="continuous">
+        <origin xyz="0.1016 -0.1016 -0.0508"/>
+        <axis xyz="0 1 0"/>
+        <parent link="base_link"/>
+        <child link="front_right_wheel"/>
+    </joint>
+
+
+    <joint name="back_left_wheel_joint" type="continuous">
+        <origin xyz="-0.1016 0.1016 -0.0508"/>
+        <axis xyz="0 1 0"/>
+        <parent link="base_link"/>
+        <child link="back_left_wheel"/>
+    </joint>
+
+
+    <joint name="back_right_wheel_joint" type="continuous">
+        <origin xyz="-0.1016 -0.1016 -0.0508"/>
+        <axis xyz="0 1 0"/>
+        <parent link="base_link"/>
+        <child link="back_right_wheel"/>
+    </joint>
+
+    <xacro:robot_ros2_control/>
+
+
+</robot>
