@@ -20,7 +20,7 @@ def generate_launch_description():
         "xacro ",
         PathJoinSubstitution([
             startup_pkg,
-            "robot_description",
+            "robots",
             selected_robot,
             "urdf",
             "robot.urdf.xacro"
@@ -32,7 +32,7 @@ def generate_launch_description():
     controller_config = ParameterFile(
         PathJoinSubstitution([
         startup_pkg,
-        "robot_description",
+        "robots",
         selected_robot,
         "config",
         "controllers.yaml"

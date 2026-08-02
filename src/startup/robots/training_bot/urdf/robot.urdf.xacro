@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="training_bot">
 
-    <xacro:arg name="use_sim" default="false"/>
+    <!-- gazebo | mujoco | mock -->
+    <xacro:arg name="sim_backend" default="mock"/>
+    <xacro:property name="sim_backend" value="$(arg sim_backend)"/>
     
     <!-- Base -->
     <link name="base_link">
@@ -82,7 +84,16 @@
 
     <!-- ros2_control -->
     <xacro:include filename="ros2_control.xacro"/>
-    <xacro:robot_ros2_control use_sim="$(arg use_sim)"/>
+    <xacro:robot_ros2_control sim_backend="${sim_backend}"/>
+
+    <!-- Gazebo hosts the controller_manager itself; no ros2_control_node in that case -->
+    <xacro:if value="${sim_backend == 'gazebo'}">
+        <gazebo>
+            <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+                <parameters>$(find startup)/robots/training_bot/config/controllers.yaml</parameters>
+            </plugin>
+        </gazebo>
+    </xacro:if>
 
     <!-- Wheel joints -->
 
@@ -116,8 +127,5 @@
         <parent link="base_link"/>
         <child link="back_right_wheel"/>
     </joint>
-
-    <xacro:robot_ros2_control/>
-
 
 </robot>

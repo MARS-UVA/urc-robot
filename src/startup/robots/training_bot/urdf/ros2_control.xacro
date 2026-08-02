@@ -1,20 +1,23 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<xacro:macro name="robot_ros2_control" params="use_sim">
+<xacro:macro name="robot_ros2_control" params="sim_backend">
 
 <ros2_control name="TrainingBotSystem" type="system">
 
 <hardware>
-    <xacro:if value="$(arg use_sim)">
+    <xacro:if value="${sim_backend == 'gazebo'}">
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      </xacro:if>
+      <xacro:if value="${sim_backend == 'mujoco'}">
         <plugin>mujoco_ros2_control/MujocoSystemInterface</plugin>
         <param name="headless">false</param>
         <!-- <param name="mujoco_model">${mujoco_model_path}</param> -->
         <param name="sim_speed_factor">1.0</param>
       </xacro:if>
-      <xacro:unless value="$(arg use_sim)">
+      <xacro:if value="${sim_backend == 'mock'}">
         <plugin>mock_components/GenericSystem</plugin>
-      </xacro:unless>
+      </xacro:if>
 </hardware>
 
 
