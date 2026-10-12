@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="sheet_metal_assembly">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import sheet_metal_assembly urdf file -->
+    <xacro:include filename="$(find arm_description)/urdf/pdr_robot_arm.urdf.xacro" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="sheet_metal_assembly.ros2_control.xacro" />
+
+
+    <xacro:sheet_metal_assembly_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+
+</robot>
