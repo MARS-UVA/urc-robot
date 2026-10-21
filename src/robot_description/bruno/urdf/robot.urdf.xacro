@@ -1,0 +1,147 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="robot">
+  <xacro:arg name="enable_rgbd" default="false"/>
+  <xacro:arg name="enable_lidar" default="false"/>
+  <xacro:include filename="$(find robot_description)/bruno/urdf/rgbd.gazebo.xacro" />
+
+  <xacro:include filename="$(find robot_description)/bruno/urdf/robot.urdf" />
+
+  <!-- Navigation convention: +X points toward the blue drums (-Y of CAD).
+       Keep the CAD frame and UI drive reversal unchanged. A selectable-front
+       implementation can add a separate logical frame/command adapter later. -->
+  <link name="base_link" />
+  <joint name="blue_forward_base_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="frame_assembly" />
+    <origin xyz="0 0 0" rpy="0 0 ${pi / 2}" />
+  </joint>
+
+  <xacro:include filename="$(find robot_description)/bruno/urdf/ros2_control.urdf.xacro" />
+
+  <xacro:robot_ros2_control robot_backend="gazebo" />
+
+  <xacro:macro name="gazebo_camera" params="name">
+    <gazebo reference="${name}_camera_link">
+      <sensor name="${name}_camera" type="camera">
+        <!-- Map Gazebo +X forward / +Z up to optical +Z forward / -Y up.
+             The optical joint uses RPY (-pi/2, -pi/2, 0); yaw alone
+             aligns the viewing direction but leaves the image rolled 90 degrees. -->
+        <pose>0 0 0 ${-pi / 2} 0 ${pi / 2}</pose>
+        <always_on>true</always_on>
+        <update_rate>1</update_rate>
+        <topic>/${name}_camera/image_raw</topic>
+        <gz_frame_id>${name}_camera_color_optical_frame</gz_frame_id>
+        <camera>
+          <!-- MuJoCo uses a 58 degree vertical FOV at a 4:3 aspect ratio. -->
+          <horizontal_fov>${2 * atan(tan(58 * pi / 360) * 4 / 3)}</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>100</far>
+          </clip>
+        </camera>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:gazebo_camera name="front"/>
+  <xacro:gazebo_camera name="rear"/>
+
+  <xacro:if value="$(arg enable_rgbd)">
+    <xacro:if value="${'$(arg robot_backend)' == 'gazebo'}">
+      <xacro:rgbd_camera parent="frame_assembly" name="rgbd_blue"
+                        xyz="0.1159 -0.2921 0.1308" yaw="${-pi / 2}"/>
+      <xacro:rgbd_camera parent="frame_assembly" name="rgbd_orange"
+                        xyz="0.1159 0.2921 0.1308" yaw="${pi / 2}"/>
+    </xacro:if>
+  </xacro:if>
+
+  <xacro:if value="$(arg enable_lidar)">
+    <gazebo reference="unilidar_link">
+
+      <!-- 1. 3D LiDAR Sensor Profile (Unitree L2 Specifications) -->
+      <sensor name="unilidar_cloud" type="gpu_lidar">
+        <pose>0 0 0 0 0 0</pose>
+        <update_rate>10</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>360</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+            <vertical>
+              <samples>32</samples> <!-- Unitree L2 features a dense vertical profile -->
+              <resolution>1</resolution>
+              <min_angle>-0.261799</min_angle> <!-- -15 deg -->
+              <max_angle>0.261799</max_angle>  <!-- +15 deg -->
+            </vertical>
+          </scan>
+          <range>
+            <!-- Ignore close chassis returns; RGB-D covers nearby obstacles. -->
+            <min>0.5</min>
+            <max>30.0</max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
+        <always_on>true</always_on>
+        <visualize>false</visualize>
+        <topic>unilidar/cloud</topic>
+        <gz_frame_id>unilidar_link</gz_frame_id>
+      </sensor>
+
+      <!-- 2. Integrated IMU Sensor Profile (with exact internal offset) -->
+      <sensor name="unilidar_imu" type="imu">
+        <always_on>true</always_on>
+        <update_rate>200</update_rate> <!-- Fast update rate for LIO pipelines -->
+        <visualize>false</visualize>
+        <topic>unilidar/imu</topic>
+        <!-- Accurate physical hardware offset inside Unitree L2 housing -->
+        <pose>-0.007698 -0.014655 0.00667 0 0 0</pose>
+        <gz_frame_id>unilidar_link</gz_frame_id>
+        <imu>
+          <angular_velocity>
+            <x><noise type="gaussian"><mean>0.0</mean><stddev>2e-4</stddev></noise></x>
+            <y><noise type="gaussian"><mean>0.0</mean><stddev>2e-4</stddev></noise></y>
+            <z><noise type="gaussian"><mean>0.0</mean><stddev>2e-4</stddev></noise></z>
+          </angular_velocity>
+          <linear_acceleration>
+            <x><noise type="gaussian"><mean>0.0</mean><stddev>1.7e-2</stddev></noise></x>
+            <y><noise type="gaussian"><mean>0.0</mean><stddev>1.7e-2</stddev></noise></y>
+            <z><noise type="gaussian"><mean>0.0</mean><stddev>1.7e-2</stddev></noise></z>
+          </linear_acceleration>
+        </imu>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="unilidar_joint">
+      <disableFixedJointLumping>true</disableFixedJointLumping>
+    </gazebo>
+
+  </xacro:if>
+
+  <!-- ============================= -->
+  <!-- Gazebo ros2_control plugin    -->
+  <!-- ============================= -->
+
+  <gazebo>
+    <plugin
+        filename="libgz_ros2_control-system.so"
+        name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+
+      <parameters>
+        $(find robot_description)/bruno/config/controllers.yaml
+      </parameters>
+
+    </plugin>
+    <plugin
+      filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+  </gazebo>
+</robot>
