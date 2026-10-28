@@ -1,0 +1,11 @@
+<library path="rocker_bogie_control">
+  <class name="rocker_bogie_control/RockerBogieSystemHardware"
+         type="rocker_bogie_hardware::RockerBogieSystemHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      ROS 2 hardware interface for a six-wheel skid steer driven by front-left
+      and front-right TalonFX motors. Each motor's feedback is shared with the
+      other two wheel joints on its side.
+    </description>
+  </class>
+</library>
