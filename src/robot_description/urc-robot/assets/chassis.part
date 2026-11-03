@@ -1,0 +1,14 @@
+{
+    "configuration": "default",
+    "designator": "base_link",
+    "documentId": "33506fe43e3b06f0a4f2ae35",
+    "documentMicroversion": "f39113ec80fedd802afe2c13",
+    "elementId": "2c09ca22c233e3945f09b8ac",
+    "fullConfiguration": "default",
+    "id": "MRlkcdM22MkVOXMBw",
+    "isStandardContent": false,
+    "name": "Chassis <1>",
+    "partId": "JHD",
+    "suppressed": false,
+    "type": "Part"
+}
