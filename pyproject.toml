@@ -1,0 +1,14 @@
+[project]
+name = "urc-robot"
+
+version = "0.1.0"
+description = "python dependencies for everything"
+requires-python = "==3.12.*"
+dependencies = [
+  "vosk",
+  "pyaudio",
+]
+
+[project.optional-dependencies]
+
+# idk maybe other stuff
