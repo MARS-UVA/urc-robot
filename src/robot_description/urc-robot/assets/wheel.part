@@ -1,0 +1,14 @@
+{
+    "configuration": "default",
+    "designator": "back_right_wheel",
+    "documentId": "33506fe43e3b06f0a4f2ae35",
+    "documentMicroversion": "f39113ec80fedd802afe2c13",
+    "elementId": "76d530e2de45750537e59799",
+    "fullConfiguration": "default",
+    "id": "M68UQCmmWySkGr1bR",
+    "isStandardContent": false,
+    "name": "Wheel <4>",
+    "partId": "JHD",
+    "suppressed": false,
+    "type": "Part"
+}

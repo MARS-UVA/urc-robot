@@ -4,7 +4,7 @@ project(robot_description)
 find_package(ament_cmake REQUIRED)
 
 install(
-  DIRECTORY training_bot bruno
+  DIRECTORY training_bot urc-robot
   DESTINATION share/${PROJECT_NAME}
 )
 

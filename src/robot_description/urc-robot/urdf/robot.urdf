@@ -1,0 +1,251 @@
+<?xml version="1.0" ?>
+<robot name="test-robot">
+  <!-- Link chassis -->
+  <link name="chassis">
+    <inertial>
+      <origin xyz="-0.267839 0.236882 0.0746766" rpy="0 0 0"/>
+      <mass value="19.9998"/>
+      <inertia ixx="1.60493" ixy="-0" ixz="-0" iyy="1.55529" iyz="-0.131187" izz="2.02854"/>
+    </inertial>
+    <!-- Part chassis -->
+    <visual>
+      <origin xyz="-0.521839 0.646545 0.02613" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://assets/chassis.stl"/>
+      </geometry>
+      <material name="chassis_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.521839 0.646545 0.02613" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://assets/chassis.stl"/>
+      </geometry>
+    </collision>
+    <!-- Part part_1_mirrored -->
+    <visual>
+      <origin xyz="-0.526919 0.149975 0.21536" rpy="3.14159 -0 3.14159"/>
+      <geometry>
+        <mesh filename="package://assets/part_1_mirrored.stl"/>
+      </geometry>
+      <material name="part_1_mirrored_material">
+        <color rgba="0.972549 0.529412 0.00392157 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.526919 0.149975 0.21536" rpy="3.14159 -0 3.14159"/>
+      <geometry>
+        <mesh filename="package://assets/part_1_mirrored.stl"/>
+      </geometry>
+    </collision>
+    <!-- Part part_1 -->
+    <visual>
+      <origin xyz="-0.00875944 0.149975 0.21536" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://assets/part_1.stl"/>
+      </geometry>
+      <material name="part_1_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.00875944 0.149975 0.21536" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://assets/part_1.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Link wheel -->
+  <link name="wheel">
+    <inertial>
+      <origin xyz="0 -0 -0.0508" rpy="0 0 0"/>
+      <mass value="1.00017"/>
+      <inertia ixx="0.00412704" ixy="0" ixz="0" iyy="0.00412704" iyz="0" izz="0.00653336"/>
+    </inertial>
+    <!-- Part wheel -->
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+      <material name="wheel_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from chassis to wheel -->
+  <joint name="front_left_wheel_joint" type="continuous">
+    <origin xyz="0.0166406 -0.294525 -0.22914" rpy="-1.5708 -0 1.5708"/>
+    <parent link="chassis"/>
+    <child link="wheel"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10"/>
+  </joint>
+  <!-- Link wheel_2 -->
+  <link name="wheel_2">
+    <inertial>
+      <origin xyz="-0 -0 -0.0508" rpy="0 0 0"/>
+      <mass value="1.00017"/>
+      <inertia ixx="0.00412704" ixy="0" ixz="0" iyy="0.00412704" iyz="0" izz="0.00653336"/>
+    </inertial>
+    <!-- Part wheel_2 -->
+    <visual>
+      <origin xyz="-0 0 0" rpy="1.5708 1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+      <material name="wheel_2_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0 0 0" rpy="1.5708 1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from chassis to wheel_2 -->
+  <joint name="mid_left_wheel_joint" type="continuous">
+    <origin xyz="0.0166406 0.149975 -0.22914" rpy="-1.5708 -0 1.5708"/>
+    <parent link="chassis"/>
+    <child link="wheel_2"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10"/>
+  </joint>
+  <!-- Link wheel_3 -->
+  <link name="wheel_3">
+    <inertial>
+      <origin xyz="0 -0 -0.0508" rpy="0 0 0"/>
+      <mass value="1.00017"/>
+      <inertia ixx="0.00412704" ixy="0" ixz="0" iyy="0.00412704" iyz="0" izz="0.00653336"/>
+    </inertial>
+    <!-- Part wheel_3 -->
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+      <material name="wheel_3_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from chassis to wheel_3 -->
+  <joint name="back_left_wheel_joint" type="continuous">
+    <origin xyz="0.0166406 0.594475 -0.22914" rpy="-1.5708 -0 1.5708"/>
+    <parent link="chassis"/>
+    <child link="wheel_3"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10"/>
+  </joint>
+  <!-- Link wheel_4 -->
+  <link name="wheel_4">
+    <inertial>
+      <origin xyz="0 0 -0.0508" rpy="0 0 0"/>
+      <mass value="1.00017"/>
+      <inertia ixx="0.00412704" ixy="0" ixz="0" iyy="0.00412704" iyz="0" izz="0.00653336"/>
+    </inertial>
+    <!-- Part wheel_4 -->
+    <visual>
+      <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+      <material name="wheel_4_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from chassis to wheel_4 -->
+  <joint name="front_right_wheel_joint" type="continuous">
+    <origin xyz="-0.552319 -0.294525 -0.22914" rpy="1.5708 -0 1.5708"/>
+    <parent link="chassis"/>
+    <child link="wheel_4"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10"/>
+  </joint>
+  <!-- Link wheel_5 -->
+  <link name="wheel_5">
+    <inertial>
+      <origin xyz="0 0 -0.0508" rpy="0 0 0"/>
+      <mass value="1.00017"/>
+      <inertia ixx="0.00412704" ixy="0" ixz="0" iyy="0.00412704" iyz="0" izz="0.00653336"/>
+    </inertial>
+    <!-- Part wheel_5 -->
+    <visual>
+      <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+      <material name="wheel_5_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from chassis to wheel_5 -->
+  <joint name="mid_right_wheel_joint" type="continuous">
+    <origin xyz="-0.552319 0.149975 -0.22914" rpy="1.5708 -0 1.5708"/>
+    <parent link="chassis"/>
+    <child link="wheel_5"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10"/>
+  </joint>
+  <!-- Link wheel_6 -->
+  <link name="wheel_6">
+    <inertial>
+      <origin xyz="0 0 -0.0508" rpy="0 0 0"/>
+      <mass value="1.00017"/>
+      <inertia ixx="0.00412704" ixy="0" ixz="0" iyy="0.00412704" iyz="0" izz="0.00653336"/>
+    </inertial>
+    <!-- Part wheel_6 -->
+    <visual>
+      <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+      <material name="wheel_6_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
+      <geometry>
+        <mesh filename="package://assets/wheel.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from chassis to wheel_6 -->
+  <joint name="back_right_wheel_joint" type="continuous">
+    <origin xyz="-0.552319 0.594475 -0.22914" rpy="1.5708 -0 1.5708"/>
+    <parent link="chassis"/>
+    <child link="wheel_6"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10"/>
+  </joint>
+</robot>
