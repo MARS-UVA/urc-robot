@@ -1,20 +1,25 @@
 <?xml version="1.0" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="test-robot">
 
-  <!-- 1. Include your unmodified Onshape URDF -->
+  <!-- Include the Onshape URDF without changing its CAD frame. -->
   <xacro:include filename="$(find robot_description)/urc-robot/urdf/robot.urdf" />
 
-  <!-- 2. Define the simulation argument -->
+  <link name="base_link"/>
+  <joint name="chassis_base_link_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <origin xyz="0 0 0" rpy="0 0 ${pi / 2}"/>
+  </joint>
+
   <xacro:arg name="use_sim" default="false" />
 
-  <!-- 3. Add ROS 2 Control Interfaces -->
   <ros2_control name="RobotSystem" type="system">
     <hardware>
       <xacro:if value="$(arg use_sim)">
         <plugin>gz_ros2_control/GazeboSimSystem</plugin>
       </xacro:if>
       <xacro:unless value="$(arg use_sim)">
-        <plugin>rocker_bogie_control/RockerBogieControl</plugin>
+        <plugin>rocker_bogie_control/RockerBogieSystemHardware</plugin>
       </xacro:unless>
     </hardware>
 
@@ -79,11 +84,12 @@
     </joint>
   </ros2_control>
 
-  <!-- 4. Add Gazebo Plugin Configuration -->
-  <gazebo>
-    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimSystem">
-      <parameters>$(find rocker_bogie_control)/config/ros2_controllers.yaml</parameters>
-    </plugin>
-  </gazebo>
-  
+  <xacro:if value="$(arg use_sim)">
+    <gazebo>
+      <plugin filename="libgz_ros2_control-system.so"
+              name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>$(find rocker_bogie_control)/config/ros2_controllers.yaml</parameters>
+      </plugin>
+    </gazebo>
+  </xacro:if>
 </robot>

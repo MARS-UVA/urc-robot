@@ -11,7 +11,7 @@
     <visual>
       <origin xyz="-0.521839 0.646545 0.02613" rpy="0 -0 0"/>
       <geometry>
-        <mesh filename="package://assets/chassis.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/chassis.stl"/>
       </geometry>
       <material name="chassis_material">
         <color rgba="0.615686 0.811765 0.929412 1"/>
@@ -20,14 +20,14 @@
     <collision>
       <origin xyz="-0.521839 0.646545 0.02613" rpy="0 -0 0"/>
       <geometry>
-        <mesh filename="package://assets/chassis.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/chassis.stl"/>
       </geometry>
     </collision>
     <!-- Part part_1_mirrored -->
     <visual>
       <origin xyz="-0.526919 0.149975 0.21536" rpy="3.14159 -0 3.14159"/>
       <geometry>
-        <mesh filename="package://assets/part_1_mirrored.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/part_1_mirrored.stl"/>
       </geometry>
       <material name="part_1_mirrored_material">
         <color rgba="0.972549 0.529412 0.00392157 1"/>
@@ -36,14 +36,14 @@
     <collision>
       <origin xyz="-0.526919 0.149975 0.21536" rpy="3.14159 -0 3.14159"/>
       <geometry>
-        <mesh filename="package://assets/part_1_mirrored.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/part_1_mirrored.stl"/>
       </geometry>
     </collision>
     <!-- Part part_1 -->
     <visual>
       <origin xyz="-0.00875944 0.149975 0.21536" rpy="0 -0 0"/>
       <geometry>
-        <mesh filename="package://assets/part_1.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/part_1.stl"/>
       </geometry>
       <material name="part_1_material">
         <color rgba="0.615686 0.811765 0.929412 1"/>
@@ -52,7 +52,7 @@
     <collision>
       <origin xyz="-0.00875944 0.149975 0.21536" rpy="0 -0 0"/>
       <geometry>
-        <mesh filename="package://assets/part_1.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/part_1.stl"/>
       </geometry>
     </collision>
   </link>
@@ -67,7 +67,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.5708 1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
       <material name="wheel_material">
         <color rgba="0.615686 0.811765 0.929412 1"/>
@@ -76,7 +76,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="1.5708 1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
     </collision>
   </link>
@@ -85,7 +85,7 @@
     <origin xyz="0.0166406 -0.294525 -0.22914" rpy="-1.5708 -0 1.5708"/>
     <parent link="chassis"/>
     <child link="wheel"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0 0 -1"/>
     <limit effort="10" velocity="10"/>
   </joint>
   <!-- Link wheel_2 -->
@@ -99,7 +99,7 @@
     <visual>
       <origin xyz="-0 0 0" rpy="1.5708 1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
       <material name="wheel_2_material">
         <color rgba="0.615686 0.811765 0.929412 1"/>
@@ -108,7 +108,7 @@
     <collision>
       <origin xyz="-0 0 0" rpy="1.5708 1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
     </collision>
   </link>
@@ -117,7 +117,7 @@
     <origin xyz="0.0166406 0.149975 -0.22914" rpy="-1.5708 -0 1.5708"/>
     <parent link="chassis"/>
     <child link="wheel_2"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0 0 -1"/>
     <limit effort="10" velocity="10"/>
   </joint>
   <!-- Link wheel_3 -->
@@ -131,7 +131,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="1.5708 1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
       <material name="wheel_3_material">
         <color rgba="0.615686 0.811765 0.929412 1"/>
@@ -140,7 +140,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="1.5708 1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
     </collision>
   </link>
@@ -149,7 +149,7 @@
     <origin xyz="0.0166406 0.594475 -0.22914" rpy="-1.5708 -0 1.5708"/>
     <parent link="chassis"/>
     <child link="wheel_3"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0 0 -1"/>
     <limit effort="10" velocity="10"/>
   </joint>
   <!-- Link wheel_4 -->
@@ -163,7 +163,7 @@
     <visual>
       <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
       <material name="wheel_4_material">
         <color rgba="0.615686 0.811765 0.929412 1"/>
@@ -172,7 +172,7 @@
     <collision>
       <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
     </collision>
   </link>
@@ -195,7 +195,7 @@
     <visual>
       <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
       <material name="wheel_5_material">
         <color rgba="0.615686 0.811765 0.929412 1"/>
@@ -204,7 +204,7 @@
     <collision>
       <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
     </collision>
   </link>
@@ -227,7 +227,7 @@
     <visual>
       <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
       <material name="wheel_6_material">
         <color rgba="0.615686 0.811765 0.929412 1"/>
@@ -236,7 +236,7 @@
     <collision>
       <origin xyz="0 0 -0.1016" rpy="-1.5708 -1.5708 0"/>
       <geometry>
-        <mesh filename="package://assets/wheel.stl"/>
+        <mesh filename="package://robot_description/urc-robot/assets/wheel.stl"/>
       </geometry>
     </collision>
   </link>
