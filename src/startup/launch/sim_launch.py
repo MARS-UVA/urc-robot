@@ -1,6 +1,7 @@
 """Launch the URC rover in Gazebo."""
 
 import math
+import os
 
 from launch import LaunchDescription
 from launch.actions import (
@@ -159,7 +160,6 @@ def generate_launch_description():
             'rtabmap_sync', default_value='false',
             description='Synchronize blue and orange RGB-D cameras into /rgbd_images',
         ),
-        OpaqueFunction(function=launch_rtabmap),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(PathJoinSubstitution([
                 FindPackageShare('startup'), 'launch', 'rgbd_sim.launch.py',
@@ -169,7 +169,7 @@ def generate_launch_description():
                 'rviz_config': LaunchConfiguration('rviz_config'),
                 'enable_rviz': LaunchConfiguration('enable_rviz'),
             }.items(),
-            condition=IfCondition(LaunchConfiguration('enable_rgbd')),
+            condition=IfCondition(LaunchConfiguration('enable_rgbd'))),
         SetEnvironmentVariable(
             name='GZ_IP',
             value=EnvironmentVariable(name='GZ_IP', default_value='127.0.0.1'),
@@ -191,7 +191,7 @@ def generate_launch_description():
                 [PathJoinSubstitution([FindPackageShare('ros_gz_sim'),
                                        'launch',
                                        'gz_sim.launch.py'])]),
-            launch_arguments=[('gz_args', [
+            launch_arguments={('gz_args', [
                     ' --render-engine ', LaunchConfiguration('render_engine'),
                     IfElseSubstitution(
                         no_gui,
@@ -203,8 +203,8 @@ def generate_launch_description():
                         'world',
                         'empty.world',
                     ]),
-                ],
-            }.items(),
+                ])
+            },
         ),
         robot_state_publisher,
         RegisterEventHandler(
