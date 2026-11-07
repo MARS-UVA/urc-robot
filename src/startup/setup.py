@@ -31,6 +31,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'point_lio_odometry = startup.point_lio_odometry:main',
         ],
     },
 )

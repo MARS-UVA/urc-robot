@@ -1,7 +1,9 @@
 """Launch the URC rover with its real hardware control system."""
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
     FindExecutable,
@@ -48,6 +50,22 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        DeclareLaunchArgument('enable_point_lio', default_value='true',
+                              description='Run Point-LIO using real LiDAR/IMU data'),
+        DeclareLaunchArgument('point_lio_config', default_value=PathJoinSubstitution([
+            FindPackageShare('point_lio'), 'config', 'unilidar_l2.yaml',
+        ])),
+        DeclareLaunchArgument('point_lio_sensor_frame', default_value='unilidar_imu'),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(PathJoinSubstitution([
+                FindPackageShare('startup'), 'launch', 'point_lio_launch.py',
+            ])),
+            condition=IfCondition(LaunchConfiguration('enable_point_lio')),
+            launch_arguments={
+                'point_lio_config': LaunchConfiguration('point_lio_config'),
+                'point_lio_sensor_frame': LaunchConfiguration('point_lio_sensor_frame'),
+            }.items(),
+        ),
         selected_robot_arg,
         controller_config_arg,
         Node(

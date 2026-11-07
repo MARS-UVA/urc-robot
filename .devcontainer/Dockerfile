@@ -5,11 +5,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake git sudo curl ca-certificates bash-completion \
     python3-colcon-common-extensions python3-rosdep python3-pytest \
-    python3-serial mesa-utils x11-apps libgl1-mesa-dri \
+    python3-serial python3-numpy python3-dev libeigen3-dev \
+    mesa-utils x11-apps libgl1-mesa-dri \
     ros-jazzy-desktop ros-jazzy-moveit \
     ros-jazzy-ros2-control ros-jazzy-ros2-controllers \
     ros-jazzy-ros-gz ros-jazzy-gz-ros2-control \
-    ros-jazzy-rtabmap-ros \
+    ros-jazzy-rtabmap-ros ros-jazzy-pcl-ros ros-jazzy-pcl-conversions \
     && rm -rf /var/lib/apt/lists/*
 
 # Phoenix 6 C++ SDK, including the phoenix6 CMake package.

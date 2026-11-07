@@ -20,7 +20,14 @@
   <exec_depend>ros_gz_bridge</exec_depend>
   <exec_depend>ros_gz_sim</exec_depend>
   <exec_depend>rviz2</exec_depend>
+  <exec_depend>point_lio</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>tf2_ros_py</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>rtabmap_slam</exec_depend>
+  <exec_depend>rtabmap_odom</exec_depend>
   <exec_depend>rtabmap_viz</exec_depend>
 
   <test_depend>ament_copyright</test_depend>

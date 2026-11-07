@@ -2,7 +2,7 @@
   ros__parameters:
     frame_id: base_link
     map_frame_id: map
-    # Read wheel odometry from its topic; publish only map -> odom.
+    # The launch selects odometry; publish only map -> odom.
     odom_frame_id: ''
     publish_tf: true
     subscribe_odom_info: false
@@ -18,8 +18,7 @@
     'Rtabmap/DetectionRate': '2.0'
     'RGBD/LinearUpdate': '0.05'
     'RGBD/AngularUpdate': '0.05'
-    # Wheel odometry remains authoritative for neighboring poses. The empty
-    # arena's floor alone cannot constrain visual/ICP registration reliably.
+    # The odometry estimator supplies neighboring poses; RTAB-Map handles loop closures.
     'RGBD/NeighborLinkRefining': 'false'
     'Reg/Force3DoF': 'true'
     'Mem/IncrementalMemory': 'true'

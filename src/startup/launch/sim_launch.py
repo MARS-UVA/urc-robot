@@ -58,10 +58,28 @@ def launch_gazebo(context):
     )]
 
 
+def launch_icp_odometry(context):
+    """Estimate base motion directly from Gazebo snapshot clouds."""
+    if not IfCondition(LaunchConfiguration('enable_lidar')).evaluate(context):
+        return []
+    return [Node(
+        package='rtabmap_odom', executable='icp_odometry',
+        name='icp_odometry', output='screen',
+        parameters=[
+            PathJoinSubstitution([FindPackageShare('startup'), 'config', 'icp_odometry.yaml']),
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+        ],
+        remappings=[('scan_cloud', '/unilidar/cloud'), ('odom', '/icp/odom')],
+        on_exit=Shutdown(reason='ICP odometry exited'),
+    )]
+
+
 def launch_mapping(context):
-    """Map the front RGB-D images and/or LiDAR using wheel odometry."""
+    """Map using ICP odometry and the front RGB-D/LiDAR sensors."""
     if not IfCondition(LaunchConfiguration('enable_rtabmap')).evaluate(context):
         return []
+    if not IfCondition(LaunchConfiguration('enable_lidar')).evaluate(context):
+        raise RuntimeError('Gazebo RTAB-Map requires enable_lidar:=true for ICP odometry')
     rgbd = IfCondition(LaunchConfiguration('enable_rgbd')).evaluate(context)
     lidar = IfCondition(LaunchConfiguration('enable_lidar')).evaluate(context)
     if not (rgbd or lidar):
@@ -76,6 +94,8 @@ def launch_mapping(context):
             {
                 'use_sim_time': LaunchConfiguration('use_sim_time'),
                 'database_path': str(database),
+                'qos_odom': 2,
+                'delete_db_on_start': True,
                 'subscribe_depth': rgbd,
                 'subscribe_rgb': rgbd,
                 'subscribe_scan_cloud': lidar,
@@ -88,7 +108,7 @@ def launch_mapping(context):
             ('depth/image', '/front_rgbd/depth/image_raw'),
             ('rgb/camera_info', '/front_rgbd/camera_info'),
             ('scan_cloud', '/unilidar/cloud'),
-            ('odom', '/diff_drive_controller/odom'),
+            ('odom', '/icp/odom'),
             ('map', '/map'),
         ],
         on_exit=Shutdown(reason='RTAB-Map exited'),
@@ -112,14 +132,14 @@ def launch_mapping(context):
                 'qos_image': 2,
                 'qos_camera_info': 2,
                 'qos_scan': 2,
-                'qos_odom': 1,
+                'qos_odom': 2,
             }],
             remappings=[
                 ('rgb/image', '/front_rgbd/color/image_raw'),
                 ('depth/image', '/front_rgbd/depth/image_raw'),
                 ('rgb/camera_info', '/front_rgbd/camera_info'),
                 ('scan_cloud', '/unilidar/cloud'),
-                ('odom', '/diff_drive_controller/odom'),
+                ('odom', '/icp/odom'),
             ],
         ))
     return nodes
@@ -263,7 +283,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'rtabmap_database_path', default_value=str(Path.home() / '.ros/rtabmap/urc_gazebo.db'),
-            description='RTAB-Map database to save or resume',
+            description='RTAB-Map database cleared at each simulation launch',
         ),
         DeclareLaunchArgument(
             'enable_rgbd', default_value='true',
@@ -311,6 +331,7 @@ def generate_launch_description():
         ],
         bridge,
         OpaqueFunction(function=launch_gazebo),
+        OpaqueFunction(function=launch_icp_odometry),
         OpaqueFunction(function=launch_mapping),
         robot_state_publisher,
         RegisterEventHandler(
