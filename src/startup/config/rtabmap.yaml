@@ -1,0 +1,34 @@
+/rtabmap/rtabmap:
+  ros__parameters:
+    frame_id: base_link
+    map_frame_id: map
+    # Read wheel odometry from its topic; publish only map -> odom.
+    odom_frame_id: ''
+    publish_tf: true
+    subscribe_odom_info: false
+    approx_sync: true
+    approx_sync_max_interval: 0.15
+    topic_queue_size: 30
+    sync_queue_size: 30
+    qos_image: 2
+    qos_camera_info: 2
+    qos_scan: 2
+    qos_odom: 1
+    wait_for_transform: 0.5
+    'Rtabmap/DetectionRate': '2.0'
+    'RGBD/LinearUpdate': '0.05'
+    'RGBD/AngularUpdate': '0.05'
+    # Wheel odometry remains authoritative for neighboring poses. The empty
+    # arena's floor alone cannot constrain visual/ICP registration reliably.
+    'RGBD/NeighborLinkRefining': 'false'
+    'Reg/Force3DoF': 'true'
+    'Mem/IncrementalMemory': 'true'
+    'Mem/DepthCompressionFormat': '.png'
+    'Grid/3D': 'true'
+    'Grid/CellSize': '0.05'
+    'Grid/RangeMax': '15.0'
+    'Grid/NormalsSegmentation': 'false'
+    # The wheel contact plane is z=-0.34344 in base_link.
+    'Grid/MaxGroundHeight': '-0.28'
+    'Grid/GroundIsObstacle': 'false'
+    'Grid/MapFrameProjection': 'false'
