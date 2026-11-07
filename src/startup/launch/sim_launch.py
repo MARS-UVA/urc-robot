@@ -174,7 +174,7 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz2',
-        arguments=['-d', PathJoinSubstitution([FindPackageShare('startup'), 'config', 'robot.rviz'])],
+        arguments=['-d', PathJoinSubstitution([FindPackageShare('robot_description'), 'bruno', 'config', 'robot.rviz'])],
         parameters=[{'use_sim_time': use_sim_time}],
         output='screen',
         condition=UnlessCondition(LaunchConfiguration('no_gui')),
@@ -182,6 +182,11 @@ def generate_launch_description():
 
     ld = LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument(
+            'render_engine',
+            default_value='ogre' if os.environ.get('LIBGL_ALWAYS_SOFTWARE') == '1' else 'ogre2',
+            description='Gazebo renderer; use ogre for software rendering in the container',
+        ),
         DeclareLaunchArgument(
             'no_gui', default_value='false',
             description='Run simulation without Gazebo, RViz, or RTAB-Map windows',
@@ -192,7 +197,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'rviz_config', default_value=PathJoinSubstitution([
-                FindPackageShare('startup'), 'config', 'RGBDRViz.rviz',
+                FindPackageShare('robot_description'), 'bruno', 'config', 'RGBDRViz.rviz',
             ]),
             description='RViz configuration for mapping or navigation',
         ),
@@ -242,6 +247,7 @@ def generate_launch_description():
                                        'launch',
                                        'gz_sim.launch.py'])]),
             launch_arguments=[('gz_args', [
+                    ' --render-engine ', LaunchConfiguration('render_engine'),
                     IfElseSubstitution(
                         LaunchConfiguration('no_gui'),
                         if_value=' -s --headless-rendering -r -v 1 ',
