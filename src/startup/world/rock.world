@@ -1,0 +1,755 @@
+<?xml version='1.0' encoding='utf-8'?>
+<sdf version="1.4">
+  <world name="rock_field">
+    <!--28 untextured sphere obstacles. Origin and rover spawn area are clear.-->
+    <scene>
+      <shadows>false</shadows>
+    </scene>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics" />
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands" />
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster" />
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <physics type="dart">
+      <max_step_size>0.01</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>100</real_time_update_rate>
+      <gravity>0 0 -9.81</gravity>
+    </physics>
+    <model name="sphere_01">
+      <static>true</static>
+      <pose>4.835 2.003 0.45 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.45</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.45</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.40 0.40 0.40 1</ambient>
+            <diffuse>0.40 0.40 0.40 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_02">
+      <static>true</static>
+      <pose>2.108 5.089 0.60 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.60</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.60</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.45 0.45 0.45 1</ambient>
+            <diffuse>0.45 0.45 0.45 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_03">
+      <static>true</static>
+      <pose>-1.998 4.824 0.75 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.75</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.75</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.50 0.50 0.50 1</ambient>
+            <diffuse>0.50 0.50 0.50 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_04">
+      <static>true</static>
+      <pose>-5.147 2.132 0.90 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.90</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.90</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.55 0.55 0.55 1</ambient>
+            <diffuse>0.55 0.55 0.55 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_05">
+      <static>true</static>
+      <pose>-5.265 -2.181 0.55 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.55</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.55</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.60 0.60 0.60 1</ambient>
+            <diffuse>0.60 0.60 0.60 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_06">
+      <static>true</static>
+      <pose>-2.167 -5.230 0.70 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.70</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.70</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.40 0.40 0.40 1</ambient>
+            <diffuse>0.40 0.40 0.40 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_07">
+      <static>true</static>
+      <pose>2.172 -5.244 0.95 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.95</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.95</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.45 0.45 0.45 1</ambient>
+            <diffuse>0.45 0.45 0.45 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_08">
+      <static>true</static>
+      <pose>4.913 -2.035 0.45 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.45</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.45</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.50 0.50 0.50 1</ambient>
+            <diffuse>0.50 0.50 0.50 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_09">
+      <static>true</static>
+      <pose>8.031 4.544 0.60 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.60</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.60</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.55 0.55 0.55 1</ambient>
+            <diffuse>0.55 0.55 0.55 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_10">
+      <static>true</static>
+      <pose>2.529 9.121 0.75 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.75</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.75</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.60 0.60 0.60 1</ambient>
+            <diffuse>0.60 0.60 0.60 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_11">
+      <static>true</static>
+      <pose>-4.742 8.381 0.90 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.90</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.90</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.40 0.40 0.40 1</ambient>
+            <diffuse>0.40 0.40 0.40 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_12">
+      <static>true</static>
+      <pose>-8.959 2.485 0.55 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.55</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.55</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.45 0.45 0.45 1</ambient>
+            <diffuse>0.45 0.45 0.45 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_13">
+      <static>true</static>
+      <pose>-8.561 -4.843 0.70 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.70</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.70</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.50 0.50 0.50 1</ambient>
+            <diffuse>0.50 0.50 0.50 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_14">
+      <static>true</static>
+      <pose>-2.596 -9.360 0.95 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.95</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.95</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.55 0.55 0.55 1</ambient>
+            <diffuse>0.55 0.55 0.55 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_15">
+      <static>true</static>
+      <pose>4.683 -8.277 0.45 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.45</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.45</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.60 0.60 0.60 1</ambient>
+            <diffuse>0.60 0.60 0.60 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_16">
+      <static>true</static>
+      <pose>9.047 -2.509 0.60 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.60</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.60</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.40 0.40 0.40 1</ambient>
+            <diffuse>0.40 0.40 0.40 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_17">
+      <static>true</static>
+      <pose>12.338 5.111 0.75 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.75</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.75</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.45 0.45 0.45 1</ambient>
+            <diffuse>0.45 0.45 0.45 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_18">
+      <static>true</static>
+      <pose>5.267 12.716 0.90 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.90</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.90</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.50 0.50 0.50 1</ambient>
+            <diffuse>0.50 0.50 0.50 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_19">
+      <static>true</static>
+      <pose>-5.187 12.522 0.55 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.55</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.55</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.55 0.55 0.55 1</ambient>
+            <diffuse>0.55 0.55 0.55 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_20">
+      <static>true</static>
+      <pose>-12.609 5.223 0.70 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.70</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.70</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.60 0.60 0.60 1</ambient>
+            <diffuse>0.60 0.60 0.60 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_21">
+      <static>true</static>
+      <pose>-12.422 -5.145 0.95 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.95</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.95</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.40 0.40 0.40 1</ambient>
+            <diffuse>0.40 0.40 0.40 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_22">
+      <static>true</static>
+      <pose>-5.189 -12.528 0.45 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.45</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.45</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.45 0.45 0.45 1</ambient>
+            <diffuse>0.45 0.45 0.45 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_23">
+      <static>true</static>
+      <pose>5.063 -12.224 0.60 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.60</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.60</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.50 0.50 0.50 1</ambient>
+            <diffuse>0.50 0.50 0.50 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_24">
+      <static>true</static>
+      <pose>12.634 -5.233 0.75 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.75</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.75</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.55 0.55 0.55 1</ambient>
+            <diffuse>0.55 0.55 0.55 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_25">
+      <static>true</static>
+      <pose>-12.500 -12.500 0.90 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.90</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.90</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.60 0.60 0.60 1</ambient>
+            <diffuse>0.60 0.60 0.60 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_26">
+      <static>true</static>
+      <pose>-12.500 12.500 0.55 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.55</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.55</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.40 0.40 0.40 1</ambient>
+            <diffuse>0.40 0.40 0.40 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_27">
+      <static>true</static>
+      <pose>12.500 -12.500 0.70 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.70</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.70</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.45 0.45 0.45 1</ambient>
+            <diffuse>0.45 0.45 0.45 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="sphere_28">
+      <static>true</static>
+      <pose>12.500 12.500 0.95 0 0 0</pose>
+      <link name="sphere">
+        <collision name="collision">
+          <geometry>
+            <sphere>
+              <radius>0.95</radius>
+            </sphere>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <sphere>
+              <radius>0.95</radius>
+            </sphere>
+          </geometry>
+          <cast_shadows>false</cast_shadows>
+          <material>
+            <ambient>0.50 0.50 0.50 1</ambient>
+            <diffuse>0.50 0.50 0.50 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>

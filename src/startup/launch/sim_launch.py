@@ -47,7 +47,7 @@ def launch_gazebo(context):
     if IfCondition(LaunchConfiguration('no_gui')).evaluate(context):
         args += ['-s', '--headless-rendering']
     world = PathJoinSubstitution([
-        FindPackageShare('startup'), 'world', 'empty.world',
+        FindPackageShare('startup'), 'world', LaunchConfiguration('choose_map'),
     ]).perform(context)
     return [ExecuteProcess(
         cmd=[sys.executable, '-m', 'startup.gazebo_process', '--',
@@ -223,6 +223,10 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument(
+            'choose_map', default_value='empty.world',
+            description='Gazebo world filename: empty.world or rock.world',
+        ),
         DeclareLaunchArgument(
             'render_engine',
             default_value='ogre' if os.environ.get('LIBGL_ALWAYS_SOFTWARE') == '1' else 'ogre2',
