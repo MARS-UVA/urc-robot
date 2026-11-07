@@ -27,8 +27,8 @@ from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 
 
-CAD_SPAWN_YAW = math.pi / 2
-CAD_YAW_IN_BASE = math.pi / 2
+CAD_SPAWN_YAW = 0
+CAD_YAW_IN_BASE = 0
 
 
 def generate_launch_description():
