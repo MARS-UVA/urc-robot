@@ -14,7 +14,6 @@
   "containerEnv": {
     "QT_X11_NO_MITSHM": "1",
     "LIBGL_ALWAYS_SOFTWARE": "1",
-    "COLCON_DEFAULTS_FILE": "/etc/colcon/defaults.yaml",
     "DISPLAY": "${localEnv:DISPLAY}",
     "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
     "XDG_RUNTIME_DIR": "/mnt/wslg/runtime-dir",

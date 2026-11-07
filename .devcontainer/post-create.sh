@@ -8,6 +8,7 @@ fi
 rosdep update --rosdistro jazzy
 sudo apt-get update
 # Mongo warehouse support is optional; it is not available on all architectures.
+# Phoenix 6 is installed from CTRE's APT repository in the Dockerfile.
 rosdep install --from-paths src --ignore-src --rosdistro jazzy -y \
     --skip-keys 'warehouse_ros_mongo phoenix6'
 printf '\nReady. Run: colcon build && source install/setup.bash\n'

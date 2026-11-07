@@ -13,8 +13,7 @@
   ],
   "containerEnv": {
     "QT_X11_NO_MITSHM": "1",
-    "LIBGL_ALWAYS_SOFTWARE": "1",
-    "COLCON_DEFAULTS_FILE": "/etc/colcon/defaults.yaml"
+    "LIBGL_ALWAYS_SOFTWARE": "1"
   },
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {

@@ -1,6 +1,0 @@
-# The hardware plugin needs the separately installed CTRE Phoenix 6 SDK.
-# Override with: COLCON_DEFAULTS_FILE=/dev/null colcon build --symlink-install
-build:
-  symlink-install: true
-  packages-skip:
-    - rocker_bogie_control

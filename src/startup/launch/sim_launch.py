@@ -191,12 +191,12 @@ def generate_launch_description():
                 [PathJoinSubstitution([FindPackageShare('ros_gz_sim'),
                                        'launch',
                                        'gz_sim.launch.py'])]),
-            launch_arguments={('gz_args', [
+            launch_arguments=[('gz_args', [
                     ' --render-engine ', LaunchConfiguration('render_engine'),
                     IfElseSubstitution(
                         no_gui,
-                        if_value='-s --headless-rendering -r -v 1 ',
-                        else_value='-r -v 1 ',
+                        if_value=' -s --headless-rendering -r -v 1 ',
+                        else_value=' -r -v 1 ',
                     ),
                     PathJoinSubstitution([
                         FindPackageShare('startup'),
@@ -204,7 +204,7 @@ def generate_launch_description():
                         'empty.world',
                     ]),
                 ])
-            },
+            ],
         ),
         robot_state_publisher,
         RegisterEventHandler(
