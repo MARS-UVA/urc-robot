@@ -6,10 +6,10 @@
   <!-- Dummy Wheel Links -->
   <link name="front_left_wheel"/>
   <link name="mid_left_wheel"/>
-  <link name="rear_left_wheel"/>
+  <link name="back_left_wheel"/>
   <link name="front_right_wheel"/>
   <link name="mid_right_wheel"/>
-  <link name="rear_right_wheel"/>
+  <link name="back_right_wheel"/>
 
   <!-- Dummy Joints connecting wheels to the base -->
   <joint name="front_left_wheel_joint" type="continuous">
@@ -24,9 +24,9 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
-  <joint name="rear_left_wheel_joint" type="continuous">
+  <joint name="back_left_wheel_joint" type="continuous">
     <parent link="base_link"/>
-    <child link="rear_left_wheel"/>
+    <child link="back_left_wheel"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
@@ -43,9 +43,9 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
-  <joint name="rear_right_wheel_joint" type="continuous">
+  <joint name="back_right_wheel_joint" type="continuous">
     <parent link="base_link"/>
-    <child link="rear_right_wheel"/>
+    <child link="back_right_wheel"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
@@ -66,7 +66,7 @@
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
-    <joint name="rear_left_wheel_joint">
+    <joint name="back_left_wheel_joint">
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
@@ -81,7 +81,7 @@
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
-    <joint name="rear_right_wheel_joint">
+    <joint name="back_right_wheel_joint">
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>

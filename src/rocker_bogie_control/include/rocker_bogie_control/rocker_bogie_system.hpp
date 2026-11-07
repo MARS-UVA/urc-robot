@@ -14,6 +14,13 @@
 
 #include <ctre/phoenix6/TalonFX.hpp>
 
+#define FRONT_LEFT_WHEEL_ID 13
+#define MID_LEFT_WHEEL_ID 14
+#define BACK_LEFT_WHEEL_ID 15
+#define FRONT_RIGHT_WHEEL_ID 10
+#define MID_RIGHT_WHEEL_ID 11
+#define BACK_RIGHT_WHEEL_ID 12
+
 namespace rocker_bogie_hardware
 {
 
@@ -45,14 +52,17 @@ class RockerBogieSystemHardware : public hardware_interface::SystemInterface
         std::array<size_t, 2> drive_joint_indices_{};
         std::array<std::vector<size_t>, 2> side_joint_indices_;
 
-        std::array<std::shared_ptr<ctre::phoenix6::hardware::TalonFX>, 2> motors_;
+        std::array<std::array<std::shared_ptr<ctre::phoenix6::hardware::TalonFX>, 3>, 2> motors_;
         std::array<ctre::phoenix6::controls::VelocityVoltage, 2> velocity_requests_{
             ctre::phoenix6::controls::VelocityVoltage(
               units::turns_per_second_t(0.0)),
             ctre::phoenix6::controls::VelocityVoltage(
               units::turns_per_second_t(0.0))};
         
-        const std::array<int, 2> motor_can_ids_ = {10, 13};
+        const std::array<std::array<int, 3>, 2> motor_can_ids_{{
+            {{FRONT_LEFT_WHEEL_ID, MID_LEFT_WHEEL_ID, BACK_LEFT_WHEEL_ID}},
+            {{FRONT_RIGHT_WHEEL_ID, MID_RIGHT_WHEEL_ID, BACK_RIGHT_WHEEL_ID}}
+        }};
         const std::string canbus_name_ = "*"; // Name of your CANivore network
 };
 
