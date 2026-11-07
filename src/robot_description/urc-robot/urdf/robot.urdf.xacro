@@ -12,6 +12,25 @@
   </joint>
 
   <xacro:arg name="use_sim" default="false" />
+  <xacro:arg name="enable_rgbd" default="true"/>
+  <xacro:arg name="enable_side_cameras" default="true"/>
+  <xacro:arg name="enable_lidar" default="true"/>
+  <xacro:include filename="$(find robot_description)/urc-robot/urdf/sensors.gazebo.xacro"/>
+  <!-- Middle axle is approximately (-0.15, -0.268) in base_link.
+       Front is +X; side cameras face outward; LiDAR clears the rear roof. -->
+  <xacro:if value="$(arg use_sim)">
+    <xacro:if value="$(arg enable_rgbd)">
+      <xacro:rover_camera name="front_rgbd" xyz="0.03 -0.267839 0.25" yaw="0" rgbd="true"/>
+    </xacro:if>
+    <xacro:if value="$(arg enable_side_cameras)">
+      <xacro:rover_camera name="left_camera" xyz="-0.25 0.005 0.25" yaw="${pi / 2}"/>
+      <xacro:rover_camera name="right_camera" xyz="-0.25 -0.54 0.25" yaw="${-pi / 2}"/>
+    </xacro:if>
+    <xacro:if value="$(arg enable_lidar)">
+      <xacro:rover_lidar xyz="-0.55 -0.267839 0.38"/>
+    </xacro:if>
+  </xacro:if>
+
 
   <ros2_control name="RobotSystem" type="system">
     <hardware>

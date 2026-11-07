@@ -49,6 +49,9 @@ def generate_launch_description():
                 ' ',
                 robot_description_file,
                 ' use_sim:=true',
+                ' enable_rgbd:=', LaunchConfiguration('enable_rgbd'),
+                ' enable_side_cameras:=', LaunchConfiguration('enable_side_cameras'),
+                ' enable_lidar:=', LaunchConfiguration('enable_lidar'),
             ]),
             value_type=str,
         )
@@ -112,7 +115,7 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz2',
-        arguments=['-d', PathJoinSubstitution([FindPackageShare('robot_description'), 'bruno', 'config', 'robot.rviz'])],
+        arguments=['-d', LaunchConfiguration('rviz_config')],
         parameters=[{'use_sim_time': use_sim_time}],
         output='screen',
         condition=IfCondition(LaunchConfiguration('enable_rviz')),
@@ -136,7 +139,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'rviz_config', default_value=PathJoinSubstitution([
-                FindPackageShare('robot_description'), 'bruno', 'config', 'RGBDRViz.rviz',
+                FindPackageShare('startup'), 'config', 'sensors.rviz',
             ]),
             description='RViz configuration for mapping or navigation',
         ),
@@ -149,27 +152,19 @@ def generate_launch_description():
             description='RTAB-Map database to save or resume',
         ),
         DeclareLaunchArgument(
-            'enable_rgbd', default_value=LaunchConfiguration('enable_rtabmap'),
-            description='Bridge the optional blue and orange RGB-D cameras (also enable it in robot_description)',
+            'enable_rgbd', default_value='true',
+            description='Spawn and bridge the front RGB-D camera',
         ),
         DeclareLaunchArgument(
-            'enable_lidar', default_value=LaunchConfiguration('enable_rtabmap'),
-            description='Bridge the optional simulated LiDAR (also enable it in robot_description)',
+            'enable_lidar', default_value='true',
+            description='Spawn and bridge the rear roof 360-degree LiDAR',
         ),
         DeclareLaunchArgument(
             'rtabmap_sync', default_value='false',
             description='Synchronize blue and orange RGB-D cameras into /rgbd_images',
         ),
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(PathJoinSubstitution([
-                FindPackageShare('startup'), 'launch', 'rgbd_sim.launch.py',
-            ])),
-            launch_arguments={
-                'use_sim_time': use_sim_time,
-                'rviz_config': LaunchConfiguration('rviz_config'),
-                'enable_rviz': LaunchConfiguration('enable_rviz'),
-            }.items(),
-            condition=IfCondition(LaunchConfiguration('enable_rgbd'))),
+        DeclareLaunchArgument('enable_side_cameras', default_value='true',
+                              description='Spawn and bridge the left and right RGB cameras'),
         SetEnvironmentVariable(
             name='GZ_IP',
             value=EnvironmentVariable(name='GZ_IP', default_value='127.0.0.1'),
@@ -185,6 +180,24 @@ def generate_launch_description():
                 ]),
             ],
         ),
+        *[
+            Node(
+                package='ros_gz_bridge', executable='parameter_bridge',
+                name=name + '_bridge', output='screen',
+                parameters=[{
+                    'use_sim_time': use_sim_time,
+                    'config_file': PathJoinSubstitution([
+                        FindPackageShare('startup'), 'config', name + '_bridge.yaml',
+                    ]),
+                }],
+                condition=IfCondition(LaunchConfiguration(flag)),
+            )
+            for name, flag in [
+                ('front_rgbd', 'enable_rgbd'),
+                ('side_cameras', 'enable_side_cameras'),
+                ('lidar', 'enable_lidar'),
+            ]
+        ],
         bridge,
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -219,4 +232,3 @@ def generate_launch_description():
         gz_spawn_entity,
         rviz,
     ])
-    return ld
