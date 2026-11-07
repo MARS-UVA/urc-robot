@@ -1,20 +1,44 @@
 <?xml version="1.0" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="test-robot">
 
-  <!-- 1. Include your unmodified Onshape URDF -->
+  <!-- Include the Onshape URDF without changing its CAD frame. -->
   <xacro:include filename="$(find robot_description)/urc-robot/urdf/robot.urdf" />
 
-  <!-- 2. Define the simulation argument -->
-  <xacro:arg name="use_sim" default="false" />
+  <link name="base_link"/>
+  <joint name="chassis_base_link_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <origin xyz="0 0 0" rpy="0 0 ${pi / 2}"/> <!-- do not change this from pi / 2 -->
+  </joint>
 
-  <!-- 3. Add ROS 2 Control Interfaces -->
+  <xacro:arg name="use_sim" default="false" />
+  <xacro:arg name="enable_rgbd" default="true"/>
+  <xacro:arg name="enable_side_cameras" default="true"/>
+  <xacro:arg name="enable_lidar" default="true"/>
+  <xacro:include filename="$(find robot_description)/urc-robot/urdf/sensors.gazebo.xacro"/>
+  <!-- Middle axle is approximately (-0.15, -0.268) in base_link.
+       Front is +X; side cameras face outward; LiDAR clears the rear roof. -->
+  <xacro:if value="$(arg use_sim)">
+    <xacro:if value="$(arg enable_rgbd)">
+      <xacro:rover_camera name="front_rgbd" xyz="0.03 -0.267839 0.25" yaw="0" rgbd="true"/>
+    </xacro:if>
+    <xacro:if value="$(arg enable_side_cameras)">
+      <xacro:rover_camera name="left_camera" xyz="-0.25 0.005 0.25" yaw="${pi / 2}"/>
+      <xacro:rover_camera name="right_camera" xyz="-0.25 -0.54 0.25" yaw="${-pi / 2}"/>
+    </xacro:if>
+    <xacro:if value="$(arg enable_lidar)">
+      <xacro:rover_lidar xyz="-0.55 -0.267839 0.38"/>
+    </xacro:if>
+  </xacro:if>
+
+
   <ros2_control name="RobotSystem" type="system">
     <hardware>
       <xacro:if value="$(arg use_sim)">
         <plugin>gz_ros2_control/GazeboSimSystem</plugin>
       </xacro:if>
       <xacro:unless value="$(arg use_sim)">
-        <plugin>rocker_bogie_control/RockerBogieControl</plugin>
+        <plugin>rocker_bogie_control/RockerBogieSystemHardware</plugin>
       </xacro:unless>
     </hardware>
 
@@ -79,11 +103,12 @@
     </joint>
   </ros2_control>
 
-  <!-- 4. Add Gazebo Plugin Configuration -->
-  <gazebo>
-    <plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimSystem">
-      <parameters>$(find rocker_bogie_control)/config/ros2_controllers.yaml</parameters>
-    </plugin>
-  </gazebo>
-  
+  <xacro:if value="$(arg use_sim)">
+    <gazebo>
+      <plugin filename="libgz_ros2_control-system.so"
+              name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>$(find rocker_bogie_control)/config/ros2_controllers.yaml</parameters>
+      </plugin>
+    </gazebo>
+  </xacro:if>
 </robot>

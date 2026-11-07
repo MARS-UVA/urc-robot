@@ -52,7 +52,7 @@ class RockerBogieSystemHardware : public hardware_interface::SystemInterface
             ctre::phoenix6::controls::VelocityVoltage(
               units::turns_per_second_t(0.0))};
         
-        const std::array<int, 2> motor_can_ids_ = {33, 34};
+        const std::array<int, 2> motor_can_ids_ = {10, 13};
         const std::string canbus_name_ = "*"; // Name of your CANivore network
 };
 

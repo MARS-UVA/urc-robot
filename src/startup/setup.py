@@ -13,6 +13,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
+        (os.path.join('share', package_name, 'config'), glob('config/*')),
         (os.path.join('share', package_name, 'world'),
             glob('world/*')),
         *[(os.path.join('share', package_name, os.path.dirname(path)), [path]) for path in glob('models/*/*', recursive=True) if os.path.isfile(path)],

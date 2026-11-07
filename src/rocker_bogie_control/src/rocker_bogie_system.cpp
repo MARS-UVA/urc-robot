@@ -21,8 +21,8 @@ hardware_interface::CallbackReturn RockerBogieSystemHardware::on_init(
   }
 
   const std::array<std::array<const char *, 3>, 2> wheel_names{{
-    {{"front_left_wheel_joint", "mid_left_wheel_joint", "rear_left_wheel_joint"}},
-    {{"front_right_wheel_joint", "mid_right_wheel_joint", "rear_right_wheel_joint"}}
+    {{"front_left_wheel_joint", "mid_left_wheel_joint", "back_left_wheel_joint"}},
+    {{"front_right_wheel_joint", "mid_right_wheel_joint", "back_right_wheel_joint"}}
   }};
 
   hw_commands_.assign(info_.joints.size(), 0.0);
@@ -68,10 +68,12 @@ std::vector<hardware_interface::StateInterface> RockerBogieSystemHardware::expor
 std::vector<hardware_interface::CommandInterface> RockerBogieSystemHardware::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
-  for (const auto joint_index : drive_joint_indices_) {
-    command_interfaces.emplace_back(hardware_interface::CommandInterface(
-      info_.joints[joint_index].name, hardware_interface::HW_IF_VELOCITY,
-      &hw_commands_[joint_index]));
+  for (const auto & side_joint_indices : side_joint_indices_) {
+    for (const auto joint_index : side_joint_indices) {
+      command_interfaces.emplace_back(hardware_interface::CommandInterface(
+        info_.joints[joint_index].name, hardware_interface::HW_IF_VELOCITY,
+        &hw_commands_[joint_index]));
+    }
   }
   return command_interfaces;
 }
