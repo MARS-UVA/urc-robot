@@ -9,6 +9,7 @@ Panels:
         - /TF1/Tree1
         - /PointCloud21
         - /Imu1
+        - /Axes1
       Splitter Ratio: 0.5
     Tree Height: 796
   - Class: rviz_common/Selection
@@ -128,6 +129,7 @@ Visualization Manager:
         Value: /front_camera/image_raw
       Value: false
       Visibility:
+        "": true
         Grid: true
         Image: true
         Imu: true
@@ -151,6 +153,7 @@ Visualization Manager:
         Value: /rear_camera/image_raw
       Value: false
       Visibility:
+        "": true
         Front Camera: true
         Grid: true
         Image: true
@@ -265,6 +268,13 @@ Visualization Manager:
         Value: /unilidar/imu
       Value: true
       fixed_frame_orientation: true
+    - Class: rviz_default_plugins/Axes
+      Enabled: true
+      Length: 0.5
+      Name: Axes
+      Radius: 0.029999999329447746
+      Reference Frame: base_link
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -309,10 +319,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5697969198226929
+      Pitch: 0.47479677200317383
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 4.6590962409973145
+      Yaw: 1.020911455154419
     Saved: ~
 Window Geometry:
   Displays:
