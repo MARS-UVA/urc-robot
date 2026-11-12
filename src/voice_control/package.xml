@@ -7,6 +7,12 @@
   <maintainer email="ericzn248@gmail.com">ericzn248</maintainer>
   <license>TODO: License declaration</license>
 
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>python3-pyaudio</exec_depend>
+  <exec_depend>robot_actions</exec_depend>
+  <!-- vosk has no rosdep key; install with: pip install vosk -->
+
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
   <test_depend>ament_mypy</test_depend>
