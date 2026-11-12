@@ -1,0 +1,9 @@
+# Follow a target until cancelled or lost.
+# Goal: none
+---
+# Result
+bool success
+string message
+---
+# Feedback
+float32 distance_to_target  # meters

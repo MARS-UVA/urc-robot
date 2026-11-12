@@ -1,0 +1,9 @@
+# Find an object, pick it up, and bring it back.
+# Goal: none
+---
+# Result
+bool success
+string message
+---
+# Feedback
+string state

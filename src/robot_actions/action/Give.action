@@ -1,0 +1,9 @@
+# Hand a held object to a recipient.
+# Goal: none
+---
+# Result
+bool success
+string message
+---
+# Feedback
+string state  # e.g. "approaching", "extending", "releasing"
