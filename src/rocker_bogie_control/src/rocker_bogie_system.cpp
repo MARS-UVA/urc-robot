@@ -82,9 +82,45 @@ hardware_interface::CallbackReturn RockerBogieSystemHardware::on_activate(const 
 {
   RCLCPP_INFO(rclcpp::get_logger("RockerBogieSystemHardware"), "Activating hardware...");
 
-  for (size_t side = 0; side < motors_.size(); ++side) {
-    motors_[side] = std::make_shared<ctre::phoenix6::hardware::TalonFX>(
-      motor_can_ids_[side], canbus_name_);
+  for (size_t side = 0; side < motor_can_ids_.size(); ++side) {
+    for (size_t wheel = 0; wheel < motor_can_ids_[side].size(); ++wheel) {
+      const int can_id = motor_can_ids_[side][wheel];
+      if (can_id < 0 || can_id > 62) {
+        RCLCPP_ERROR(
+          rclcpp::get_logger("RockerBogieSystemHardware"),
+          "Invalid TalonFX CAN ID %d for side %zu wheel %zu",
+          can_id, side, wheel);
+        return hardware_interface::CallbackReturn::ERROR;
+      }
+
+      for (size_t previous_side = 0; previous_side <= side; ++previous_side) {
+        const size_t wheel_limit = previous_side == side ? wheel : motor_can_ids_[previous_side].size();
+        for (size_t previous_wheel = 0; previous_wheel < wheel_limit; ++previous_wheel) {
+          if (motor_can_ids_[previous_side][previous_wheel] == can_id) {
+            RCLCPP_ERROR(
+              rclcpp::get_logger("RockerBogieSystemHardware"),
+              "Duplicate TalonFX CAN ID %d",
+              can_id);
+            return hardware_interface::CallbackReturn::ERROR;
+          }
+        }
+      }
+
+      motors_[side][wheel] = std::make_shared<ctre::phoenix6::hardware::TalonFX>(
+        can_id, canbus_name_);
+    }
+
+    for (size_t wheel = 1; wheel < motors_[side].size(); ++wheel) {
+      const auto status = motors_[side][wheel]->SetControl(
+        controls::Follower(motor_can_ids_[side][0], false));
+      if (!status.IsOK()) {
+        RCLCPP_ERROR(
+          rclcpp::get_logger("RockerBogieSystemHardware"),
+          "Failed to set TalonFX CAN ID %d to follow CAN ID %d: %s",
+          motor_can_ids_[side][wheel], motor_can_ids_[side][0], status.GetName());
+        return hardware_interface::CallbackReturn::ERROR;
+      }
+    }
 
     // ctre::phoenix6::configs::TalonFXConfiguration config{};
     // config.Slot0.kP = 0.1;
@@ -96,7 +132,7 @@ hardware_interface::CallbackReturn RockerBogieSystemHardware::on_activate(const 
     //   RCLCPP_ERROR(
     //     rclcpp::get_logger("RockerBogieSystemHardware"),
     //     "Failed to configure TalonFX CAN ID %d: %s",
-    //     motor_can_ids_[side], status.GetName());
+    //     motor_can_ids_[side][0], status.GetName());
     //   return hardware_interface::CallbackReturn::ERROR;
     // }
   }
@@ -108,8 +144,8 @@ hardware_interface::CallbackReturn RockerBogieSystemHardware::on_deactivate(cons
 {
   RCLCPP_INFO(rclcpp::get_logger("RockerBogieSystemHardware"), "Deactivating hardware...");
   for (size_t side = 0; side < motors_.size(); ++side) {
-    if (motors_[side]) {
-      motors_[side]->SetControl(velocity_requests_[side].WithVelocity(
+    if (motors_[side][0]) {
+      motors_[side][0]->SetControl(velocity_requests_[side].WithVelocity(
         units::turns_per_second_t(0.0)));
     }
   }
@@ -120,18 +156,19 @@ hardware_interface::return_type RockerBogieSystemHardware::read(
   const rclcpp::Time &, const rclcpp::Duration & period)
 {
   for (size_t side = 0; side < motors_.size(); ++side) {
-    if (!motors_[side]) {
-      RCLCPP_ERROR(
-        rclcpp::get_logger("RockerBogieSystemHardware"),
-        "Cannot read wheel feedback before hardware activation");
-      return hardware_interface::return_type::ERROR;
-    }
+    for (size_t wheel = 0; wheel < motors_[side].size(); ++wheel) {
+      if (!motors_[side][wheel]) {
+        RCLCPP_ERROR(
+          rclcpp::get_logger("RockerBogieSystemHardware"),
+          "Cannot read wheel feedback before hardware activation");
+        return hardware_interface::return_type::ERROR;
+      }
 
-    const double position_radians = motors_[side]->GetPosition().GetValueAsDouble() * 2.0 *
-      std::numbers::pi;
-    const double velocity_radians_per_second =
-      motors_[side]->GetVelocity().GetValueAsDouble() * 2.0 * std::numbers::pi;
-    for (const auto joint_index : side_joint_indices_[side]) {
+      const double position_radians =
+        motors_[side][wheel]->GetPosition().GetValueAsDouble() * 2.0 * std::numbers::pi;
+      const double velocity_radians_per_second =
+        motors_[side][wheel]->GetVelocity().GetValueAsDouble() * 2.0 * std::numbers::pi;
+      const auto joint_index = side_joint_indices_[side][wheel];
       hw_positions_[joint_index] = position_radians;
       hw_velocities_[joint_index] = velocity_radians_per_second;
     }
@@ -142,7 +179,7 @@ hardware_interface::return_type RockerBogieSystemHardware::read(
 hardware_interface::return_type RockerBogieSystemHardware::write(const rclcpp::Time &, const rclcpp::Duration &)
 {
   for (size_t side = 0; side < motors_.size(); ++side) {
-    if (!motors_[side]) {
+    if (!motors_[side][0]) {
       RCLCPP_ERROR(
         rclcpp::get_logger("RockerBogieSystemHardware"),
         "Cannot write wheel commands before hardware activation");
@@ -152,7 +189,8 @@ hardware_interface::return_type RockerBogieSystemHardware::write(const rclcpp::T
     ctre::phoenix::unmanaged::FeedEnable(10);
     const double target_rotations_per_second =
       hw_commands_[drive_joint_indices_[side]] / (2.0 * std::numbers::pi);
-    motors_[side]->SetControl(controls::VelocityVoltage(target_rotations_per_second * 10_tps));
+    motors_[side][0]->SetControl(
+      controls::VelocityVoltage(target_rotations_per_second * 10_tps));
     
     // controls::DutyCycleOut test{0.5};
     // motors_[side]->SetControl(test);
