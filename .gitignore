@@ -4,3 +4,6 @@
 build
 install
 log
+
+.DS_Store
+__pycache__

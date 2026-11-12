@@ -1,0 +1,21 @@
+/icp_odometry:
+  ros__parameters:
+    frame_id: base_link
+    odom_frame_id: odom
+    publish_tf: true
+    subscribe_scan: false
+    subscribe_scan_cloud: true
+    qos: 2
+    wait_for_transform: 0.2
+    queue_size: 5
+    # Gazebo clouds are instantaneous snapshots, so no deskewing is needed.
+    deskewing: false
+    'Reg/Force3DoF': 'false'
+    'Icp/PointToPlane': 'true'
+    'Icp/VoxelSize': '0.1'
+    'Icp/PointToPlaneK': '20'
+    'Icp/MaxCorrespondenceDistance': '1.0'
+    'Icp/Iterations': '20'
+    'Odom/Strategy': '0'
+    'Odom/ScanKeyFrameThr': '0.7'
+    'OdomF2M/ScanMaxSize': '15000'

@@ -22,4 +22,7 @@ diff_drive_controller:
     wheel_separation: 0.56896
     wheel_radius: 0.1143
 
+    odom_frame_id: odom
+    base_frame_id: base_link
+    enable_odom_tf: false
     use_stamped_vel: true

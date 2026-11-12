@@ -1,18 +1,20 @@
 """Launch the URC rover in Gazebo."""
 
-import math
 import os
+from pathlib import Path
+import sys
 
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
-    IncludeLaunchDescription,
+    ExecuteProcess,
+    OpaqueFunction,
     RegisterEventHandler,
     SetEnvironmentVariable,
+    Shutdown,
 )
 from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessExit
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     Command,
     EnvironmentVariable,
@@ -31,10 +33,121 @@ CAD_SPAWN_YAW = 0
 CAD_YAW_IN_BASE = 0
 
 
+def shutdown_on_failure(event, context):
+    """Stop the launch if spawning the robot or a controller fails."""
+    if event.returncode and not context.is_shutdown:
+        return [Shutdown(reason='Robot or controller startup failed')]
+    return []
+
+
+def launch_gazebo(context):
+    """Start Gazebo without a shell and supervise all of its forked processes."""
+    args = ['-r', '-v', '1', '--render-engine',
+            LaunchConfiguration('render_engine').perform(context)]
+    if IfCondition(LaunchConfiguration('no_gui')).evaluate(context):
+        args += ['-s', '--headless-rendering']
+    world = PathJoinSubstitution([
+        FindPackageShare('startup'), 'world', LaunchConfiguration('choose_map'),
+    ]).perform(context)
+    return [ExecuteProcess(
+        cmd=[sys.executable, '-m', 'startup.gazebo_process', '--',
+             FindExecutable(name='gz'), 'sim', *args, world],
+        name='gazebo', output='screen',
+        on_exit=Shutdown(reason='Gazebo exited'),
+        sigterm_timeout='4', sigkill_timeout='2',
+    )]
+
+
+def launch_icp_odometry(context):
+    """Estimate base motion directly from Gazebo snapshot clouds."""
+    if not IfCondition(LaunchConfiguration('enable_lidar')).evaluate(context):
+        return []
+    return [Node(
+        package='rtabmap_odom', executable='icp_odometry',
+        name='icp_odometry', output='screen',
+        parameters=[
+            PathJoinSubstitution([FindPackageShare('startup'), 'config', 'icp_odometry.yaml']),
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+        ],
+        remappings=[('scan_cloud', '/unilidar/cloud'), ('odom', '/icp/odom')],
+        on_exit=Shutdown(reason='ICP odometry exited'),
+    )]
+
+
+def launch_mapping(context):
+    """Map using ICP odometry and the front RGB-D/LiDAR sensors."""
+    if not IfCondition(LaunchConfiguration('enable_rtabmap')).evaluate(context):
+        return []
+    if not IfCondition(LaunchConfiguration('enable_lidar')).evaluate(context):
+        raise RuntimeError('Gazebo RTAB-Map requires enable_lidar:=true for ICP odometry')
+    rgbd = IfCondition(LaunchConfiguration('enable_rgbd')).evaluate(context)
+    lidar = IfCondition(LaunchConfiguration('enable_lidar')).evaluate(context)
+    if not (rgbd or lidar):
+        raise RuntimeError('RTAB-Map requires enable_rgbd:=true or enable_lidar:=true')
+    database = Path(LaunchConfiguration('rtabmap_database_path').perform(context)).expanduser()
+    database.parent.mkdir(parents=True, exist_ok=True)
+    nodes = [Node(
+        package='rtabmap_slam', executable='rtabmap',
+        name='rtabmap', namespace='rtabmap', output='screen',
+        parameters=[
+            PathJoinSubstitution([FindPackageShare('startup'), 'config', 'rtabmap.yaml']),
+            {
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'database_path': str(database),
+                'qos_odom': 2,
+                'delete_db_on_start': True,
+                'subscribe_depth': rgbd,
+                'subscribe_rgb': rgbd,
+                'subscribe_scan_cloud': lidar,
+                'Grid/Sensor': ParameterValue('0' if lidar else '1', value_type=str),
+                'Reg/Strategy': ParameterValue('0' if rgbd else '1', value_type=str),
+            },
+        ],
+        remappings=[
+            ('rgb/image', '/front_rgbd/color/image_raw'),
+            ('depth/image', '/front_rgbd/depth/image_raw'),
+            ('rgb/camera_info', '/front_rgbd/camera_info'),
+            ('scan_cloud', '/unilidar/cloud'),
+            ('odom', '/icp/odom'),
+            ('map', '/map'),
+        ],
+        on_exit=Shutdown(reason='RTAB-Map exited'),
+    )]
+    # Match mars-jetson: mapping opens its UI unless running without windows.
+    if (not IfCondition(LaunchConfiguration('no_gui')).evaluate(context) and
+            IfCondition(LaunchConfiguration('enable_rtabmap_viz')).evaluate(context)):
+        nodes.append(Node(
+            package='rtabmap_viz', executable='rtabmap_viz',
+            name='rtabmap_viz', namespace='rtabmap', output='screen',
+            parameters=[{
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
+                'frame_id': 'base_link',
+                'subscribe_depth': rgbd,
+                'subscribe_rgb': rgbd,
+                'subscribe_scan_cloud': lidar,
+                'subscribe_odom_info': False,
+                'approx_sync': True,
+                'topic_queue_size': 30,
+                'sync_queue_size': 30,
+                'qos_image': 2,
+                'qos_camera_info': 2,
+                'qos_scan': 2,
+                'qos_odom': 2,
+            }],
+            remappings=[
+                ('rgb/image', '/front_rgbd/color/image_raw'),
+                ('depth/image', '/front_rgbd/depth/image_raw'),
+                ('rgb/camera_info', '/front_rgbd/camera_info'),
+                ('scan_cloud', '/unilidar/cloud'),
+                ('odom', '/icp/odom'),
+            ],
+        ))
+    return nodes
+
+
 def generate_launch_description():
     """Create the Gazebo launch description for the URC rover."""
     use_sim_time = LaunchConfiguration('use_sim_time')
-    no_gui = LaunchConfiguration('no_gui')
 
     robot_description_file = PathJoinSubstitution([
         FindPackageShare('robot_description'),
@@ -60,6 +173,7 @@ def generate_launch_description():
     robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
+        on_exit=Shutdown(reason='Robot state publisher exited'),
         name='robot_state_publisher',
         output='screen',
         parameters=[
@@ -86,6 +200,7 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
+        on_exit=shutdown_on_failure,
         arguments=[
             'joint_state_broadcaster',
             '--controller-manager', '/controller_manager',
@@ -96,6 +211,7 @@ def generate_launch_description():
     robot_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
+        on_exit=shutdown_on_failure,
         arguments=[
             'diff_drive_controller',
             '--controller-manager', '/controller_manager',
@@ -108,6 +224,7 @@ def generate_launch_description():
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'],
+        on_exit=Shutdown(reason='Clock bridge exited'),
         output='screen',
     )
 
@@ -118,11 +235,18 @@ def generate_launch_description():
         arguments=['-d', LaunchConfiguration('rviz_config')],
         parameters=[{'use_sim_time': use_sim_time}],
         output='screen',
-        condition=IfCondition(LaunchConfiguration('enable_rviz')),
+        condition=IfCondition(IfElseSubstitution(
+            LaunchConfiguration('no_gui'), if_value='false',
+            else_value=LaunchConfiguration('enable_rviz'),
+        )),
     )
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument(
+            'choose_map', default_value='empty.world',
+            description='Gazebo world filename: empty.world or rock.world',
+        ),
         DeclareLaunchArgument(
             'render_engine',
             default_value='ogre' if os.environ.get('LIBGL_ALWAYS_SOFTWARE') == '1' else 'ogre2',
@@ -138,18 +262,28 @@ def generate_launch_description():
             description='Also launch RViz',
         ),
         DeclareLaunchArgument(
-            'rviz_config', default_value=PathJoinSubstitution([
-                FindPackageShare('startup'), 'config', 'sensors.rviz',
-            ]),
-            description='RViz configuration for mapping or navigation',
-        ),
-        DeclareLaunchArgument(
-            'enable_rtabmap', default_value='false',
+            'enable_rtabmap', default_value='true',
             description='Run RTAB-Map with the enabled RGB-D and LiDAR sensors',
         ),
         DeclareLaunchArgument(
-            'rtabmap_database_path', default_value='/tmp/rgbd_visual_test.db',
-            description='RTAB-Map database to save or resume',
+            'enable_rtabmap_viz', default_value='true',
+            description='Open the RTAB-Map UI when mapping is enabled and no_gui is false',
+        ),
+        DeclareLaunchArgument(
+            'rviz_config', default_value=IfElseSubstitution(
+                LaunchConfiguration('enable_rtabmap'),
+                if_value=PathJoinSubstitution([
+                    FindPackageShare('startup'), 'config', 'mapping.rviz',
+                ]),
+                else_value=PathJoinSubstitution([
+                    FindPackageShare('startup'), 'config', 'sensors.rviz',
+                ]),
+            ),
+            description='RViz configuration for mapping or navigation',
+        ),
+        DeclareLaunchArgument(
+            'rtabmap_database_path', default_value=str(Path.home() / '.ros/rtabmap/urc_gazebo.db'),
+            description='RTAB-Map database cleared at each simulation launch',
         ),
         DeclareLaunchArgument(
             'enable_rgbd', default_value='true',
@@ -158,10 +292,6 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'enable_lidar', default_value='true',
             description='Spawn and bridge the rear roof 360-degree LiDAR',
-        ),
-        DeclareLaunchArgument(
-            'rtabmap_sync', default_value='false',
-            description='Synchronize blue and orange RGB-D cameras into /rgbd_images',
         ),
         DeclareLaunchArgument('enable_side_cameras', default_value='true',
                               description='Spawn and bridge the left and right RGB cameras'),
@@ -184,6 +314,7 @@ def generate_launch_description():
             Node(
                 package='ros_gz_bridge', executable='parameter_bridge',
                 name=name + '_bridge', output='screen',
+                on_exit=Shutdown(reason=name + ' bridge exited'),
                 parameters=[{
                     'use_sim_time': use_sim_time,
                     'config_file': PathJoinSubstitution([
@@ -199,34 +330,18 @@ def generate_launch_description():
             ]
         ],
         bridge,
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                [PathJoinSubstitution([FindPackageShare('ros_gz_sim'),
-                                       'launch',
-                                       'gz_sim.launch.py'])]),
-            launch_arguments=[('gz_args', [
-                    ' --render-engine ', LaunchConfiguration('render_engine'),
-                    IfElseSubstitution(
-                        no_gui,
-                        if_value=' -s --headless-rendering -r -v 1 ',
-                        else_value=' -r -v 1 ',
-                    ),
-                    PathJoinSubstitution([
-                        FindPackageShare('startup'),
-                        'world',
-                        'empty.world',
-                    ]),
-                ])
-            ],
-        ),
+        OpaqueFunction(function=launch_gazebo),
+        OpaqueFunction(function=launch_icp_odometry),
+        OpaqueFunction(function=launch_mapping),
         robot_state_publisher,
         RegisterEventHandler(
             OnProcessExit(
                 target_action=gz_spawn_entity,
-                on_exit=[
-                    joint_state_broadcaster_spawner,
-                    robot_controller_spawner,
-                ],
+                on_exit=lambda event, context: (
+                    [] if context.is_shutdown else
+                    shutdown_on_failure(event, context) if event.returncode else
+                    [joint_state_broadcaster_spawner, robot_controller_spawner]
+                ),
             )
         ),
         gz_spawn_entity,
