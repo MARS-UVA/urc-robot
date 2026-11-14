@@ -245,7 +245,7 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='true'),
         DeclareLaunchArgument(
             'choose_map', default_value='empty.world',
-            description='Gazebo world filename: empty.world or rock.world',
+            description='Gazebo world filename: empty.world, rock.world, or aruco.world',
         ),
         DeclareLaunchArgument(
             'render_engine',

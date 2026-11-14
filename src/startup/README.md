@@ -8,7 +8,7 @@
 
 | Argument | Default | Purpose |
 | --- | --- | --- |
-| `choose_map` | `empty.world` | World to load: `empty.world` or `rock.world` (28 sphere obstacles of varying sizes). |
+| `choose_map` | `empty.world` | World to load: `empty.world`, `rock.world` (28 sphere obstacles), or `aruco.world` (2 cm ArUco tags). |
 | `use_sim_time` | `true` | Use Gazebo's simulation clock. |
 | `render_engine` | `ogre` with `LIBGL_ALWAYS_SOFTWARE=1`; otherwise `ogre2` | Gazebo renderer. |
 | `no_gui` | `false` | Hide Gazebo, RViz, and RTAB-Map windows. |

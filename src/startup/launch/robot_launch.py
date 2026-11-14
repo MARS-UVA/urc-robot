@@ -103,4 +103,9 @@ def generate_launch_description():
             ],
             output='screen',
         ),
+        Node(
+            package='aruco_detection',
+            executable='aruco_detection',
+            output='screen'
+        )
     ])

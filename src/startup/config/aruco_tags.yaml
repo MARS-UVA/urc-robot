@@ -1,0 +1,39 @@
+dictionary: DICT_4X4_50 
+objects:
+  key:
+    tags:
+      - id: 0
+        size_m: 0.01
+
+  keyboard:
+    # [x,y], where bottom left is [0, 0] and top right is [1, 1]
+    tags:
+      - id: 1
+        corner: top_left
+        size_m: 0.02
+        position_rel: [1,0]
+      - id: 2
+        corner: bottom_left
+        size_m: 0.02
+        position_rel: [0,0]
+      - id: 3
+        corner: bottom_right
+        size_m: 0.02
+        position_rel: [1,0]
+      - id: 4
+        corner: top_left
+        size_m: 0.02
+        position_rel: [0,1]
+
+  start_post:
+    tags:
+      - id: 0
+        size_m: 0.2
+  post_1:
+    tags:
+      - id: 1
+        size_m: 0.2
+  post_2:
+    tags:
+      - id: 2
+        size_m: 0.2
